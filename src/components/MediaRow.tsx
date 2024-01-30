@@ -3,7 +3,7 @@ const MediaRow = (props: {item: MediaItem}) => {
   const {item} = props;
   return (
     // TODO: move <tr> element  for each item property from Home.tsx here
-    <tr key={item.media_id}>
+    <tr key={item.media_id} className="media-row">
       <td>
         <img src={item.thumbnail} alt={item.title} />
       </td>
