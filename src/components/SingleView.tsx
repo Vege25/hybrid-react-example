@@ -5,6 +5,7 @@ const SingleView = (props: {
   item: MediaItem;
   setSelectedItem: (item: MediaItem | undefined) => void;
 }) => {
+  // State
   const {item, setSelectedItem} = props;
   return (
     <dialog open>
