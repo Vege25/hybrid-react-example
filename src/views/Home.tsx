@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import MediaRow from './components/MediaRow';
-import {MediaItem} from './types/DBTypes';
-import SingleView from './components/SingleView';
+import MediaRow from '../components/MediaRow';
+import {MediaItem} from '../types/DBTypes';
+import SingleView from '../components/SingleView';
 
 const Home: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<MediaItem | undefined>();
