@@ -15,9 +15,6 @@ const Layout: React.FC = () => {
               <Link to="/profile">Profile</Link>
             </li>
             <li>
-              <Link to="/single">Single</Link>
-            </li>
-            <li>
               <Link to="/upload">Upload</Link>
             </li>
           </ul>
