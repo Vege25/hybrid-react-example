@@ -4,7 +4,7 @@ const MediaRow = (props: {item: MediaItem}) => {
   const {item} = props;
 
   return (
-    <tr className="media-row">
+    <tr key={item.media_id} className="media-row">
       <td>
         <img src={item.thumbnail} alt={item.title} />
       </td>

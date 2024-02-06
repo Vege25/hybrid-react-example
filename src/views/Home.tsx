@@ -7,9 +7,29 @@ const Home: React.FC = () => {
   const [mediaArray, setMediaArray] = useState<MediaItem[]>([]);
   const getMedia = async () => {
     try {
-      const data = await fetchData<MediaItem[]>('data.json');
-      console.log(data);
-      setMediaArray(data);
+      const query = `
+      query MediaItems {
+        mediaItems {
+          filename
+          thumbnail
+          title
+        }
+      }
+    `;
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({query}),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const resData = await fetchData<{data: {mediaItems: MediaItem[]}}>(
+        import.meta.env.VITE_GRAPHQL_SERVER,
+        options,
+      );
+      console.log(resData.data.mediaItems);
+      setMediaArray(resData.data.mediaItems);
     } catch (error) {
       console.error('getMedia failed', error);
     }
