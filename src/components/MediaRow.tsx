@@ -4,7 +4,6 @@ const MediaRow = (props: {item: MediaItem}) => {
   const {item} = props;
 
   return (
-    // TODO: move <tr> element  for each item property from Home.tsx here
     <tr className="media-row">
       <td>
         <img src={item.thumbnail} alt={item.title} />
