@@ -1,10 +1,8 @@
-import React, {useState} from 'react';
-import MediaRow from './components/MediaRow';
-import {MediaItem} from './types/DBTypes';
-import SingleView from './components/SingleView';
+import React from 'react';
+import MediaRow from '../components/MediaRow';
+import {MediaItem} from '../types/DBTypes';
 
 const Home: React.FC = () => {
-  const [selectedItem, setSelectedItem] = useState<MediaItem | undefined>();
   const mediaArray: MediaItem[] = [
     {
       media_id: 8,
@@ -43,11 +41,7 @@ const Home: React.FC = () => {
   ];
   return (
     <>
-      {selectedItem && (
-        <SingleView item={selectedItem} setSelectedItem={setSelectedItem} />
-      )}
       <h2>My Media</h2>
-      <p>{selectedItem?.media_id}</p>
       <table>
         <thead>
           <tr>
@@ -61,11 +55,7 @@ const Home: React.FC = () => {
         </thead>
         <tbody>
           {mediaArray.map((item) => (
-            <MediaRow
-              key={item.media_id}
-              item={item}
-              setSelectedItem={setSelectedItem}
-            />
+            <MediaRow key={item.media_id} item={item} />
           ))}
         </tbody>
       </table>

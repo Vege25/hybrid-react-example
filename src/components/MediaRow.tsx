@@ -1,13 +1,7 @@
+import {Link} from 'react-router-dom';
 import {MediaItem} from '../types/DBTypes';
-const MediaRow = (props: {
-  item: MediaItem;
-  setSelectedItem: (item: MediaItem | undefined) => void;
-}) => {
-  const {item, setSelectedItem} = props;
-
-  const handleView = () => {
-    setSelectedItem(item);
-  };
+const MediaRow = (props: {item: MediaItem}) => {
+  const {item} = props;
 
   return (
     // TODO: move <tr> element  for each item property from Home.tsx here
@@ -21,7 +15,9 @@ const MediaRow = (props: {
       <td>{item.filesize}</td>
       <td>{item.media_type}</td>
       <td>
-        <button onClick={handleView}>View</button>
+        <Link to="/single" state={item}>
+          View
+        </Link>
       </td>
     </tr>
   );
