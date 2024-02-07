@@ -1,48 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import MediaRow from '../components/MediaRow';
-import {MediaItemWithOwner} from '../types/DBTypes';
-import {fetchData} from '../lib/functions';
+import {useMedia} from '../hooks/apiHooks';
 
 const Home: React.FC = () => {
-  const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
-  const getMedia = async () => {
-    try {
-      const query = `
-      query MediaItems {
-        mediaItems {
-          filename
-          thumbnail
-          title
-          description
-          created_at
-          filesize
-          media_type
-          owner {
-            username
-          }
-        }
-      }
-    `;
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({query}),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-
-      const resData = await fetchData<{
-        data: {mediaItems: MediaItemWithOwner[]};
-      }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
-      console.log(resData.data.mediaItems);
-      setMediaArray(resData.data.mediaItems);
-    } catch (error) {
-      console.error('getMedia failed', error);
-    }
-  };
-  useEffect(() => {
-    getMedia();
-  }, []);
+  const mediaArray = useMedia();
   return (
     <>
       <h2>My Media</h2>
