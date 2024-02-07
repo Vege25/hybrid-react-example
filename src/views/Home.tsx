@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import MediaRow from '../components/MediaRow';
-import {MediaItem, MediaItemWithOwner} from '../types/DBTypes';
+import {MediaItemWithOwner} from '../types/DBTypes';
 import {fetchData} from '../lib/functions';
 
 const Home: React.FC = () => {
-  const [mediaArray, setMediaArray] = useState<MediaItem[]>([]);
+  const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
   const getMedia = async () => {
     try {
       const query = `
