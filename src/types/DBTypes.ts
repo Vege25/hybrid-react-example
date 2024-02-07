@@ -88,7 +88,19 @@ type UserWithNoPassword = Omit<UserWithLevel, 'password'>;
 
 type TokenContent = Pick<User, 'user_id'> & Pick<UserLevel, 'level_name'>;
 
-type MediaItemWithOwner = MediaItem & Pick<User, 'username'>;
+// type MediaItemWithOwner = MediaItem & Pick<User, 'username'>;
+
+type OwnerType = {
+  owner: Owner;
+};
+type Owner = {
+  user_id?: number;
+  username?: string;
+  email?: string;
+  created_at?: Date;
+};
+
+type MediaItemWithOwner = MediaItem & OwnerType;
 
 // for upload server
 type FileInfo = {

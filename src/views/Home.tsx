@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import MediaRow from '../components/MediaRow';
-import {MediaItem} from '../types/DBTypes';
+import {MediaItem, MediaItemWithOwner} from '../types/DBTypes';
 import {fetchData} from '../lib/functions';
 
 const Home: React.FC = () => {
@@ -13,6 +13,13 @@ const Home: React.FC = () => {
           filename
           thumbnail
           title
+          description
+          created_at
+          filesize
+          media_type
+          owner {
+            username
+          }
         }
       }
     `;
@@ -24,10 +31,9 @@ const Home: React.FC = () => {
         },
       };
 
-      const resData = await fetchData<{data: {mediaItems: MediaItem[]}}>(
-        import.meta.env.VITE_GRAPHQL_SERVER,
-        options,
-      );
+      const resData = await fetchData<{
+        data: {mediaItems: MediaItemWithOwner[]};
+      }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
       console.log(resData.data.mediaItems);
       setMediaArray(resData.data.mediaItems);
     } catch (error) {
@@ -49,6 +55,7 @@ const Home: React.FC = () => {
             <th>Created</th>
             <th>Size</th>
             <th>Type</th>
+            <th>Owner</th>
           </tr>
         </thead>
         <tbody>
