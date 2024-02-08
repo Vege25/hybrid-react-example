@@ -3,7 +3,7 @@ import React, {createContext, useState} from 'react';
 import {UserWithNoPassword} from '../types/DBTypes';
 import {useAuthentication, useUser} from '../hooks/apiHooks';
 import {useNavigate} from 'react-router-dom';
-import {AuthContextType, Credentials} from '../types/Localtypes';
+import {AuthContextType, Credentials} from '../types/LocalTypes';
 
 const UserContext = createContext<AuthContextType | null>(null);
 

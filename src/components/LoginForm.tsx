@@ -1,8 +1,8 @@
 import React from 'react';
 import {useForm} from '../hooks/FormHooks';
 import {useAuthentication} from '../hooks/apiHooks';
-import {Credentials} from '../types/Localtypes';
 import {useNavigate} from 'react-router-dom';
+import {Credentials} from '../types/LocalTypes';
 
 const LoginForm: React.FC = () => {
   const {postLogin} = useAuthentication();
