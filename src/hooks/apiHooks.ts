@@ -2,7 +2,8 @@ import {MediaItemWithOwner} from '../types/DBTypes';
 import {fetchData} from '../lib/functions';
 import {useEffect, useState} from 'react';
 import {Credentials} from '../types/Localtypes';
-import {LoginResponse} from '../types/MessageTypes';
+import {LoginResponse, UserResponse} from '../types/MessageTypes';
+
 const useMedia = (): MediaItemWithOwner[] => {
   const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
   const getMedia = async () => {
@@ -49,6 +50,94 @@ const useMedia = (): MediaItemWithOwner[] => {
 
 const useUser = () => {
   // TODO: implement network connections for auth/user server
+  const getUserByToken = async (token: string) => {
+    try {
+      const query = `
+        query getUserByToken {
+          userWithToken {
+            message
+            user {
+              created_at
+              email
+              level_name
+              user_id
+              username
+            }
+          }
+        }
+      `;
+
+      const options: RequestInit = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({query}),
+      };
+
+      const userData = await fetchData<{
+        data: {userWithToken: {user: UserResponse['user']}; message: string};
+      }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+
+      console.log('userdata', userData);
+
+      const {user} = userData.data.userWithToken;
+      console.log(user);
+
+      return user;
+    } catch (error) {
+      console.error('getUserByToken failed', error);
+    }
+  };
+
+  const postUser = async (user: {
+    username: string;
+    email: string;
+    password: string;
+  }) => {
+    try {
+      const query = `
+        mutation CreateUser($input: UserInput!) {
+          createUser(input: $input) {
+            message
+            user {
+              created_at
+              email
+              level_name
+              user_id
+              username
+            }
+          }
+        }
+      `;
+      const variables = {
+        input: {
+          username: user.username,
+          password: user.password,
+          email: user.email,
+        },
+      };
+      const options: RequestInit = {
+        method: 'POST',
+        body: JSON.stringify({query, variables}),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const resData = await fetchData<{
+        data: {createUser: UserResponse};
+      }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+      const data = resData.data.createUser.user;
+      console.log('response', data);
+      return data;
+    } catch (error) {
+      console.error('postUser failed', error);
+    }
+  };
+
+  return {getUserByToken, postUser};
 };
 
 const useAuthentication = () => {
@@ -86,6 +175,7 @@ const useAuthentication = () => {
         data: {login: LoginResponse};
       }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
       console.log(resData.data.login);
+      return resData.data.login;
     } catch (error) {
       console.error('postLogin failed', error);
     }

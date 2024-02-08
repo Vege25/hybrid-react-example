@@ -2,9 +2,11 @@ import React from 'react';
 import {useForm} from '../hooks/FormHooks';
 import {useAuthentication} from '../hooks/apiHooks';
 import {Credentials} from '../types/Localtypes';
+import {useNavigate} from 'react-router-dom';
 
 const LoginForm: React.FC = () => {
   const {postLogin} = useAuthentication();
+  const navigate = useNavigate();
   // Add your component logic here
   const initValues: Credentials = {
     username: '',
@@ -12,11 +14,21 @@ const LoginForm: React.FC = () => {
   };
 
   const {handleSubmit, handleInputChange, inputs} = useForm(async () => {
-    const creds = {
-      username: inputs.username,
-      password: inputs.password,
-    };
-    console.log(postLogin(creds));
+    try {
+      const creds = {
+        username: inputs.username,
+        password: inputs.password,
+      };
+      const loginResult = await postLogin(creds);
+      if (!loginResult) {
+        return;
+      }
+
+      localStorage.setItem('token', loginResult.token);
+      navigate('/profile');
+    } catch (e) {
+      console.log((e as Error).message);
+    }
   }, initValues);
 
   return (
