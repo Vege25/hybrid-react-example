@@ -5,7 +5,7 @@ import Single from './views/Single';
 import Upload from './views/Upload';
 import Layout from './views/Layout';
 import Login from './views/Login';
-import LogOut from './views/LogOut';
+import LogOut from './views/Logout';
 
 const App = () => {
   return (

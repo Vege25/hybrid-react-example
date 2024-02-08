@@ -1,8 +1,8 @@
 import {MediaItemWithOwner} from '../types/DBTypes';
 import {fetchData} from '../lib/functions';
 import {useEffect, useState} from 'react';
-import {Credentials} from '../types/Localtypes';
 import {LoginResponse, UserResponse} from '../types/MessageTypes';
+import {Credentials} from '../types/Localtypes';
 
 const useMedia = (): MediaItemWithOwner[] => {
   const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
