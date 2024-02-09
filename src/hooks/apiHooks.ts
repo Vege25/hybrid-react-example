@@ -1,10 +1,15 @@
-import {MediaItemWithOwner} from '../types/DBTypes';
+import {MediaItem, MediaItemWithOwner} from '../types/DBTypes';
 import {fetchData} from '../lib/functions';
 import {useEffect, useState} from 'react';
-import {LoginResponse, UserResponse} from '../types/MessageTypes';
+import {
+  LoginResponse,
+  MediaResponse,
+  UploadResponse,
+  UserResponse,
+} from '../types/MessageTypes';
 import {Credentials} from '../types/LocalTypes.ts';
 
-const useMedia = (): MediaItemWithOwner[] => {
+const useMedia = () => {
   const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
   const getMedia = async () => {
     try {
@@ -44,6 +49,39 @@ const useMedia = (): MediaItemWithOwner[] => {
   useEffect(() => {
     getMedia();
   }, []);
+
+  const postMedia = async (
+    file: UploadResponse,
+    inputs: Record<string, string>,
+    token: string,
+  ) => {
+    //TODO: complete this function
+    const media: Omit<
+      MediaItem,
+      'media_id' | 'user_id',
+      'thumbnail' | 'created_at'
+    > = {
+      title: inputs.title,
+      description: inputs.description,
+      filename: file.data.filename,
+      filesize: file.data.filesize,
+      media_type: file.data.media_type,
+    };
+    const query = ``;
+
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({query, variables: media}),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const resData = await fetchData<{
+      data: {mediaItems: MediaResponse};
+    }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+    console.log(resData.data.mediaItems);
+  };
 
   return mediaArray;
 };
@@ -142,8 +180,7 @@ const useUser = () => {
 
 const useAuthentication = () => {
   const postLogin = async (creds: Credentials) => {
-    try {
-      const query = `
+    const query = `
     mutation Login($username: String!, $password: String!) {
       login(username: $username, password: $password) {
         token
@@ -159,28 +196,65 @@ const useAuthentication = () => {
     }
   `;
 
-      const variables = {
-        username: creds.username,
-        password: creds.password,
-      };
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({query, variables}),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+    const variables = {
+      username: creds.username,
+      password: creds.password,
+    };
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({query, variables}),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
 
-      const resData = await fetchData<{
-        data: {login: LoginResponse};
-      }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
-      console.log(resData.data.login);
-      return resData.data.login;
-    } catch (error) {
-      console.error('postLogin failed', error);
-    }
+    const resData = await fetchData<{
+      data: {login: LoginResponse};
+    }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+    console.log(resData.data.login);
+    return resData.data.login;
   };
   return {postLogin};
 };
+const useFile = () => {
+  // TODO: complete the postFile function
+  const postFile = async (file: File, token: string) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const query = `
+    mutation Login($username: String!, $password: String!) {
+      login(username: $username, password: $password) {
+        token
+        message
+        user {
+          user_id
+          username
+          email
+          level_name
+          created_at
+        }
+      }
+    }
+  `;
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({query, formData}),
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const resData = await fetchData<UploadResponse>(
+        import.meta.env.VITE_GRAPHQL_SERVER,
+        options,
+      );
+      console.log(resData);
+      return resData;
+    } catch (error) {
+      console.error('postFile failed', error);
+    }
+  };
+  return {postFile};
+};
 
-export {useMedia, useUser, useAuthentication};
+export {useMedia, useUser, useAuthentication, useFile};
