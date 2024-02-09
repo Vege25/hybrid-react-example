@@ -1,35 +1,23 @@
 import React from 'react';
 import {useForm} from '../hooks/FormHooks';
-import {useAuthentication} from '../hooks/apiHooks';
-import {useNavigate} from 'react-router-dom';
 import {Credentials} from '../types/LocalTypes';
+import {useUserContext} from '../hooks/contextHooks';
 
 const LoginForm: React.FC = () => {
-  const {postLogin} = useAuthentication();
-  const navigate = useNavigate();
+  const {handleLogin} = useUserContext();
   // Add your component logic here
   const initValues: Credentials = {
     username: '',
     password: '',
   };
+  const doLogin = async () => {
+    handleLogin(inputs as Credentials);
+  };
 
-  const {handleSubmit, handleInputChange, inputs} = useForm(async () => {
-    try {
-      const creds = {
-        username: inputs.username,
-        password: inputs.password,
-      };
-      const loginResult = await postLogin(creds);
-      if (!loginResult) {
-        return;
-      }
-
-      localStorage.setItem('token', loginResult.token);
-      navigate('/profile');
-    } catch (e) {
-      console.log((e as Error).message);
-    }
-  }, initValues);
+  const {handleSubmit, handleInputChange, inputs} = useForm(
+    doLogin,
+    initValues,
+  );
 
   return (
     <>

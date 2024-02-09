@@ -6,20 +6,38 @@ import Upload from './views/Upload';
 import Layout from './views/Layout';
 import Login from './views/Login';
 import LogOut from './views/Logout';
+import {UserProvider} from './contexts/userContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   return (
     <Router basename={import.meta.env.BASE_URL}>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/upload" element={<Upload />} />
-          <Route path="/single" element={<Single />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/logout" element={<LogOut />} />
-        </Route>
-      </Routes>
+      <UserProvider>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/upload"
+              element={
+                <ProtectedRoute>
+                  <Upload />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/single" element={<Single />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<LogOut />} />
+          </Route>
+        </Routes>
+      </UserProvider>
     </Router>
   );
 };

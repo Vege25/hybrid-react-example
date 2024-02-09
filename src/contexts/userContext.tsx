@@ -7,6 +7,8 @@ import {AuthContextType, Credentials} from '../types/LocalTypes';
 
 const UserContext = createContext<AuthContextType | null>(null);
 
+// TODO: tee kohtaa 9
+
 const UserProvider = ({children}: {children: React.ReactNode}) => {
   const [user, setUser] = useState<UserWithNoPassword | null>(null);
   const {postLogin} = useAuthentication();
@@ -16,10 +18,12 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
   // login, logout and autologin functions are here instead of components
   const handleLogin = async (credentials: Credentials) => {
     try {
-      // TODO: post login credentials to API
-      // TODO: set token to local storage
-      // TODO: set user to state
-      // TODO: navigate to home
+      const loginResult = await postLogin(credentials);
+      if (loginResult) {
+        localStorage.setItem('token', loginResult.token);
+        setUser(loginResult.user);
+        navigate('/profile');
+      }
     } catch (e) {
       console.log((e as Error).message);
     }
@@ -27,9 +31,12 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleLogout = () => {
     try {
-      // TODO: remove token from local storage
-      // TODO: set user to null
-      // TODO: navigate to home
+      // remove token from local storage
+      localStorage.removeItem('token');
+      // set user to null
+      setUser(null);
+      // navigate to home
+      navigate('/');
     } catch (e) {
       console.log((e as Error).message);
     }
@@ -39,7 +46,15 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
   const handleAutoLogin = async () => {
     try {
       // TODO: get token from local storage
+      const token = localStorage.getItem('token');
       // TODO: if token exists, get user data from API
+      if (token) {
+        const userResponse = await getUserByToken(token);
+        if (userResponse) {
+          setUser(userResponse);
+          navigate('/');
+        }
+      }
       // TODO: set user to state
       // TODO: navigate to home
     } catch (e) {
