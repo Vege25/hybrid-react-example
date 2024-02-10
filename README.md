@@ -1,6 +1,6 @@
 # Hybrid Apps - React example
 
-Open [this link in browser](https://users.metropolia.fi/~veetiso/vuosi3/hybrid/react-router/) to see the app in action
+Open [this link in browser](https://users.metropolia.fi/~veetiso/vuosi3/hybrid/react-2/) to see the app in action
 
 # React + TypeScript + Vite
 
