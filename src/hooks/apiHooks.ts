@@ -46,20 +46,19 @@ const useMedia = () => {
       console.error('getMedia failed', error);
     }
   };
+
   useEffect(() => {
     getMedia();
   }, []);
 
-  const postMedia = async (
+  const postMedia = (
     file: UploadResponse,
     inputs: Record<string, string>,
     token: string,
   ) => {
-    //TODO: complete this function
     const media: Omit<
       MediaItem,
-      'media_id' | 'user_id',
-      'thumbnail' | 'created_at'
+      'media_id' | 'user_id' | 'thumbnail' | 'created_at'
     > = {
       title: inputs.title,
       description: inputs.description,
@@ -67,23 +66,48 @@ const useMedia = () => {
       filesize: file.data.filesize,
       media_type: file.data.media_type,
     };
-    const query = ``;
 
+    const query = `
+      mutation CreateMediaItem($input: MediaItemInput!) {
+        createMediaItem(input: $input) {
+          created_at
+          description
+          filename
+          filesize
+          media_id
+          media_type
+          owner {
+            created_at
+            email
+            level_name
+            user_id
+            username
+          }
+          title
+          user_id
+        }
+      }
+    `;
+
+    // Pass the "input" variable in the "variables" field
     const options = {
       method: 'POST',
-      body: JSON.stringify({query, variables: media}),
+      body: JSON.stringify({
+        query,
+        variables: {input: media}, // Ensure the variable name is "input"
+      }),
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
     };
-    const resData = await fetchData<{
-      data: {mediaItems: MediaResponse};
+
+    return fetchData<{
+      data: {createMediaItem: MediaResponse};
     }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
-    console.log(resData.data.mediaItems);
   };
 
-  return mediaArray;
+  return {mediaArray, postMedia};
 };
 
 const useUser = () => {
@@ -217,43 +241,22 @@ const useAuthentication = () => {
   return {postLogin};
 };
 const useFile = () => {
-  // TODO: complete the postFile function
   const postFile = async (file: File, token: string) => {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const query = `
-    mutation Login($username: String!, $password: String!) {
-      login(username: $username, password: $password) {
-        token
-        message
-        user {
-          user_id
-          username
-          email
-          level_name
-          created_at
-        }
-      }
-    }
-  `;
-      const options = {
-        method: 'POST',
-        body: JSON.stringify({query, formData}),
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const resData = await fetchData<UploadResponse>(
-        import.meta.env.VITE_GRAPHQL_SERVER,
-        options,
-      );
-      console.log(resData);
-      return resData;
-    } catch (error) {
-      console.error('postFile failed', error);
-    }
+    const formData = new FormData();
+    formData.append('file', file);
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+      body: formData,
+    };
+    return await fetchData<UploadResponse>(
+      import.meta.env.VITE_UPLOAD_SERVER + '/upload',
+      options,
+    );
   };
+
   return {postFile};
 };
 

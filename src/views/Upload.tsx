@@ -22,7 +22,9 @@ const Upload = () => {
         return;
       }
       const fileResult = await postFile(file, token);
+      console.log('fileresult', fileResult);
       const mediaResult = await postMedia(fileResult, inputs, token);
+      console.log(mediaResult);
       navigate('/');
     } catch (e) {
       console.log((e as Error).message);

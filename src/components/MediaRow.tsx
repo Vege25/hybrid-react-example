@@ -28,7 +28,7 @@ const MediaRow = (props: {item: MediaItemWithOwner}) => {
       <td>{formattedDate}</td>
       <td>{item.filesize}</td>
       <td>{item.media_type}</td>
-      <td>{item.owner.username}</td>
+      <td>{item.owner?.username}</td>
       <td>
         <Link to="/single" state={item}>
           View
