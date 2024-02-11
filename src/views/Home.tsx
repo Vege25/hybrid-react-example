@@ -6,25 +6,14 @@ const Home: React.FC = () => {
   const {mediaArray} = useMedia();
   return (
     <>
-      <h2>My Media</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Thumbnail</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Created</th>
-            <th>Size</th>
-            <th>Type</th>
-            <th>Owner</th>
-          </tr>
-        </thead>
-        <tbody>
+      <h2 className="text-center text-2xl font-bold">My Feed</h2>
+      <div>
+        <div>
           {mediaArray.map((item) => (
             <MediaRow key={item.media_id} item={item} />
           ))}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </>
   );
 };

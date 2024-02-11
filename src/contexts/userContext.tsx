@@ -58,8 +58,6 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
           navigate(origin);
         }
       }
-      // TODO: set user to state
-      // TODO: navigate to home
     } catch (e) {
       console.log((e as Error).message);
     }
@@ -67,7 +65,12 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
 
   return (
     <UserContext.Provider
-      value={{user, handleLogin, handleLogout, handleAutoLogin}}
+      value={{
+        user,
+        handleLogin,
+        handleLogout,
+        handleAutoLogin,
+      }}
     >
       {children}
     </UserContext.Provider>

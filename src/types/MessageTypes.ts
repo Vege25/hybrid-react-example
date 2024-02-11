@@ -36,6 +36,15 @@ type UploadResponse = MessageResponse & {
   };
 };
 
+type FriendResponse = {
+  data: {
+    friends: Friend[];
+  };
+};
+type Friend = {
+  username?: string;
+  user_id?: number;
+};
 export type {
   MessageResponse,
   ErrorResponse,
@@ -44,4 +53,6 @@ export type {
   UploadResponse,
   UserResponse,
   UserDeleteResponse,
+  FriendResponse,
+  Friend,
 };

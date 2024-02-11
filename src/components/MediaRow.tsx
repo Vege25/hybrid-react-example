@@ -1,5 +1,6 @@
 import {Link} from 'react-router-dom';
 import {MediaItemWithOwner} from '../types/DBTypes';
+import FriendElement from './FriendElement';
 const MediaRow = (props: {item: MediaItemWithOwner}) => {
   const {item} = props;
 
@@ -15,26 +16,34 @@ const MediaRow = (props: {item: MediaItemWithOwner}) => {
 
   // Convert the Date object to a string for display
   const formattedDate = createdDate
-    ? createdDate.toLocaleString('fi-FI')
+    ? createdDate.toLocaleString('fi-FI', {
+        weekday: 'short',
+        hour: 'numeric',
+        minute: 'numeric',
+      })
     : 'Invalid Date';
 
   return (
-    <tr key={item.media_id} className="media-row">
-      <td>
-        <img src={item.thumbnail} alt={item.title} />
-      </td>
-      <td>{item.title}</td>
-      <td>{item.description}</td>
-      <td>{formattedDate}</td>
-      <td>{item.filesize}</td>
-      <td>{item.media_type}</td>
-      <td>{item.owner?.username}</td>
-      <td>
+    <div key={item.media_id} className="media-row">
+      <div className="flex mx-4 justify-between items-center">
+        <FriendElement friend={item.owner} />
+        <p>{formattedDate}</p>
+      </div>
+      <div className="flex w-full h-96 items-center justify-center">
+        <img
+          className="w-full max-h-96 object-cover rounded-2xl"
+          src={item.thumbnail}
+          alt={item.title}
+        />
+      </div>
+      <h3>{item.title}</h3>
+      <p>{item.description}</p>
+      <p>
         <Link to="/single" state={item}>
           View
         </Link>
-      </td>
-    </tr>
+      </p>
+    </div>
   );
 };
 
