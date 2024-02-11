@@ -5,7 +5,7 @@ import {useMedia} from '../hooks/apiHooks';
 const Home: React.FC = () => {
   const {mediaArray} = useMedia();
   return (
-    <>
+    <div className="m-auto w-full max-w-xl px-2">
       <h2 className="text-center text-2xl font-bold">My Feed</h2>
       <div>
         <div>
@@ -14,7 +14,7 @@ const Home: React.FC = () => {
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

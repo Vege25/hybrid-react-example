@@ -30,7 +30,7 @@ const Friends: React.FC = () => {
 
       {/* Friends List Section */}
       {}
-      <div className="friends-list-section">
+      <div className="m-auto w-full max-w-xl px-2">
         <h2 className="text-lg font-bold ml-4">Your Friends</h2>
         <div className="ml-4 flex flex-col gap-4">
           {friendsArray.length > 0 ? (
