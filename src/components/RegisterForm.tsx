@@ -1,15 +1,20 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useForm} from '../hooks/FormHooks';
 import {useUser} from '../hooks/apiHooks';
 
 const RegisterForm: React.FC = () => {
   // Add your component logic here
   const {postUser} = useUser();
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean>(true);
+  const [emailAvailable, setEmailAvailable] = useState<boolean>(true);
   const initvalues = {username: '', password: '', email: ''};
 
   const doRegister = async () => {
     try {
-      console.log(inputs);
+      if (!getUsernameAvailable || !emailAvailable) {
+        return;
+      }
+
       const creds = {
         username: inputs.username,
         password: inputs.password,
@@ -24,12 +29,26 @@ const RegisterForm: React.FC = () => {
     doRegister,
     initvalues,
   );
+  const {getUsernameAvailable, getEmailAvailable} = useUser();
 
+  const handleUsernameBlur = async (
+    event: React.SyntheticEvent<HTMLInputElement>,
+  ) => {
+    const result = await getUsernameAvailable(event.currentTarget.value);
+    setUsernameAvailable(result);
+  };
+
+  const handleEmailBlur = async () => {
+    const result = await getEmailAvailable(inputs.email);
+    setEmailAvailable(result);
+  };
+
+  console.log(usernameAvailable, emailAvailable);
   return (
     <>
-      <div className="flex justify-center items-center mt-6">
-        <div className="w-full max-w-md p-4 border rounded-lg shadow-md">
-          <h3 className="text-center text-xl font-bold mb-4">Register</h3>
+      <div className="mt-6 flex items-center justify-center">
+        <div className="w-full max-w-md rounded-lg border p-4 shadow-md">
+          <h3 className="mb-4 text-center text-xl font-bold">Register</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
@@ -42,11 +61,17 @@ const RegisterForm: React.FC = () => {
                 name="username"
                 type="text"
                 id="username"
+                onBlur={handleUsernameBlur}
                 onChange={handleInputChange}
                 autoComplete="username"
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                className="mt-1 w-full rounded-md border p-2 focus:border-blue-300 focus:outline-none focus:ring"
               />
             </div>
+            {!usernameAvailable && (
+              <div className="flex justify-end">
+                <p className="text-red-500">Username not aviable</p>
+              </div>
+            )}
             <div>
               <label
                 htmlFor="password"
@@ -60,7 +85,7 @@ const RegisterForm: React.FC = () => {
                 id="password"
                 onChange={handleInputChange}
                 autoComplete="current-password"
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                className="mt-1 w-full rounded-md border p-2 focus:border-blue-300 focus:outline-none focus:ring"
               />
             </div>
             <div>
@@ -74,14 +99,20 @@ const RegisterForm: React.FC = () => {
                 name="email"
                 type="email"
                 id="email"
+                onBlur={handleEmailBlur}
                 onChange={handleInputChange}
                 autoComplete="email"
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                className="mt-1 w-full rounded-md border p-2 focus:border-blue-300 focus:outline-none focus:ring"
               />
             </div>
+            {!emailAvailable && (
+              <div className="flex justify-end">
+                <p className="text-red-500">Email not aviable</p>
+              </div>
+            )}
             <button
               type="submit"
-              className="w-full p-2 bg-blue-500 text-white rounded-md"
+              className="w-full rounded-md bg-blue-500 p-2 text-white"
             >
               Register
             </button>

@@ -30,6 +30,7 @@ const useMedia = () => {
           media_type
           owner {
             username
+            user_id
           }
         }
       }
@@ -314,7 +315,60 @@ const useUser = () => {
     }
   };
 
-  return {userArray, getUserByToken, postUser, searchUsers};
+  const getUsernameAvailable = async (username: string) => {
+    const query = `
+    query GetUsernameAviable($username: String) {
+      getUsernameAviable(username: $username) {
+        available
+      }
+    }
+      `;
+
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({query, username}),
+    };
+    const resData = await fetchData<{
+      data: {getUsernameAviable: {available: boolean}};
+    }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+    const result = resData.data.getUsernameAviable.available;
+    return result;
+  };
+
+  const getEmailAvailable = async (email: string) => {
+    const query = `
+    query GetEmailAviable($email: String) {
+      getEmailAviable(email: $email) {
+        available
+      }
+    }
+      `;
+
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({query, email}),
+    };
+    const resData = await fetchData<{
+      data: {getEmailAviable: {available: boolean}};
+    }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+    const result = resData.data.getEmailAviable.available;
+    return result;
+  };
+
+  return {
+    userArray,
+    getUserByToken,
+    postUser,
+    searchUsers,
+    getEmailAvailable,
+    getUsernameAvailable,
+  };
 };
 
 const useAuthentication = () => {

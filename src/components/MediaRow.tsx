@@ -1,8 +1,11 @@
 import {Link} from 'react-router-dom';
 import {MediaItemWithOwner} from '../types/DBTypes';
 import FriendElement from './FriendElement';
+import {useUserContext} from '../hooks/contextHooks';
+import {useEffect} from 'react';
 const MediaRow = (props: {item: MediaItemWithOwner}) => {
   const {item} = props;
+  const {user} = useUserContext();
 
   const createdAtTimestamp =
     typeof item.created_at === 'string' ? parseInt(item.created_at, 10) : 0;
@@ -23,15 +26,19 @@ const MediaRow = (props: {item: MediaItemWithOwner}) => {
       })
     : 'Invalid Date';
 
+  useEffect(() => {
+    if (!user) return;
+    console.log(item);
+  }, [item]);
   return (
     <div key={item.media_id} className="media-row">
-      <div className="flex mx-4 justify-between items-center">
+      <div className="mx-4 flex items-center justify-between">
         <FriendElement friend={item.owner} />
         <p>{formattedDate}</p>
       </div>
-      <div className="flex w-full h-96 items-center justify-center">
+      <div className="flex h-96 w-full items-center justify-center">
         <img
-          className="w-full max-h-96 object-cover rounded-2xl"
+          className="max-h-96 w-full rounded-2xl object-cover"
           src={item.thumbnail}
           alt={item.title}
         />
@@ -43,6 +50,24 @@ const MediaRow = (props: {item: MediaItemWithOwner}) => {
           View
         </Link>
       </p>
+      {user &&
+        (user.user_id === item.owner.user_id ||
+          user.level_name === 'Admin') && (
+          <>
+            <button
+              className="bg-slate-700 p-2 hover:bg-slate-950"
+              onClick={() => console.log('modify', item)}
+            >
+              Modify
+            </button>
+            <button
+              className="bg-slate-800 p-2 hover:bg-slate-950"
+              onClick={() => console.log('delete', item)}
+            >
+              Delete
+            </button>
+          </>
+        )}
     </div>
   );
 };
