@@ -8,11 +8,9 @@ const Home: React.FC = () => {
     <div className="m-auto w-full max-w-xl px-2">
       <h2 className="text-center text-2xl font-bold">My Feed</h2>
       <div>
-        <div>
-          {mediaArray.map((item) => (
-            <MediaRow key={item.media_id} item={item} />
-          ))}
-        </div>
+        {mediaArray.map((item) => (
+          <MediaRow key={item.media_id} item={item} />
+        ))}
       </div>
     </div>
   );

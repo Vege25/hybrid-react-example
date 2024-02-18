@@ -1,4 +1,5 @@
 import {
+  Like,
   MediaItem,
   MediaItemWithOwner,
   UserWithNoPassword,
@@ -9,6 +10,7 @@ import {
   Friend,
   LoginResponse,
   MediaResponse,
+  MessageResponse,
   UploadResponse,
   UserResponse,
 } from '../types/MessageTypes';
@@ -22,6 +24,7 @@ const useMedia = () => {
       query MediaItems {
         mediaItems {
           filename
+          media_id
           thumbnail
           title
           description
@@ -46,7 +49,6 @@ const useMedia = () => {
       const resData = await fetchData<{
         data: {mediaItems: MediaItemWithOwner[]};
       }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
-      console.log(resData.data.mediaItems);
       setMediaArray(resData.data.mediaItems);
     } catch (error) {
       console.error('getMedia failed', error);
@@ -145,7 +147,6 @@ const useFriends = () => {
 
       if (friendsData.data && friendsData.data.friends) {
         const friends = friendsData.data.friends;
-        console.log('friends fetch', friends);
         setFriendsArray(friends);
       } else {
         console.error(
@@ -275,7 +276,6 @@ const useUser = () => {
         data: {createUser: UserResponse};
       }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
       const data = resData.data.createUser.user;
-      console.log('response', data);
       return data;
     } catch (error) {
       console.error('postUser failed', error);
@@ -428,5 +428,128 @@ const useFile = () => {
 
   return {postFile};
 };
+const useLike = () => {
+  const postLike = async (media_id: string, token: string) => {
+    const mutation = `
+      mutation PostLike($input: LikeInput) {
+        postLike(input: $input) {
+          message
+        }
+      }
+    `;
 
-export {useMedia, useUser, useAuthentication, useFile, useFriends};
+    const variables = {
+      input: {
+        media_id,
+      },
+    };
+    console.log('var', variables);
+    console.log('od', media_id);
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({query: mutation, variables}),
+    };
+
+    const resData = await fetchData<{
+      data: {postLike: MessageResponse};
+    }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+
+    console.log('res', resData);
+    console.log(resData.data.postLike);
+    return resData.data.postLike;
+  };
+
+  const deleteLike = async (media_id: number, token: string) => {
+    const query = `
+    mutation DeleteLike($mediaId: ID!) {
+      deleteLike(media_id: $mediaId) {
+        message
+      }
+    }
+    `;
+
+    const variables = {
+      mediaId: String(media_id),
+    };
+
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({query, variables}),
+    };
+    const resData = await fetchData<{
+      data: {deleteLike: MessageResponse};
+    }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+    console.log('DELETE', resData);
+    return resData.data.deleteLike.message;
+  };
+
+  const getCountByMediaId = async (media_id: number) => {
+    // Send a GET request to /likes/:media_id to get the number of likes.
+    const query = `
+    query GetCountByMediaId($mediaId: ID!) {
+      getCountByMediaId(media_id: $mediaId) {
+        count
+      }
+    }
+    `;
+    const variables = {
+      mediaId: String(media_id),
+    };
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({query, variables}),
+    };
+    const resData = await fetchData<{
+      data: {getCountByMediaId: {count: number}};
+    }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+    return resData.data.getCountByMediaId;
+  };
+
+  const getUserLike = async (media_id: number, token: string) => {
+    // Send a GET request to /likes/bymedia/user/:media_id to get the user's like on the media.
+    const query = `
+    query GetUserLike($mediaId: ID!) {
+      getUserLike(media_id: $mediaId) {
+        created_at
+        like_id
+        media_id
+        user_id
+      }
+    }
+    `;
+
+    const variables = {
+      mediaId: String(media_id),
+    };
+
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({query, variables}),
+    };
+
+    const resData = await fetchData<{
+      data: {getUserLike: Like};
+    }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+
+    return resData.data.getUserLike;
+  };
+
+  return {postLike, deleteLike, getCountByMediaId, getUserLike};
+};
+
+export {useMedia, useUser, useAuthentication, useFile, useFriends, useLike};

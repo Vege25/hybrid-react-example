@@ -2,7 +2,6 @@ import {Link} from 'react-router-dom';
 import {MediaItemWithOwner} from '../types/DBTypes';
 import FriendElement from './FriendElement';
 import {useUserContext} from '../hooks/contextHooks';
-import {useEffect} from 'react';
 const MediaRow = (props: {item: MediaItemWithOwner}) => {
   const {item} = props;
   const {user} = useUserContext();
@@ -25,11 +24,6 @@ const MediaRow = (props: {item: MediaItemWithOwner}) => {
         minute: 'numeric',
       })
     : 'Invalid Date';
-
-  useEffect(() => {
-    if (!user) return;
-    console.log(item);
-  }, [item]);
   return (
     <div key={item.media_id} className="media-row">
       <div className="mx-4 flex items-center justify-between">
