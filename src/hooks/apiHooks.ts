@@ -431,20 +431,16 @@ const useFile = () => {
 const useLike = () => {
   const postLike = async (media_id: string, token: string) => {
     const mutation = `
-      mutation PostLike($input: LikeInput) {
-        postLike(input: $input) {
-          message
-        }
+    mutation PostLike($mediaId: ID!) {
+      postLike(media_id: $mediaId) {
+        message
       }
+    }
     `;
 
     const variables = {
-      input: {
-        media_id,
-      },
+      mediaId: String(media_id),
     };
-    console.log('var', variables);
-    console.log('od', media_id);
     const options: RequestInit = {
       method: 'POST',
       headers: {
