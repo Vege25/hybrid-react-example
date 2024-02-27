@@ -2,6 +2,7 @@ import React from 'react';
 import {NavigateFunction, useLocation, useNavigate} from 'react-router-dom';
 import {MediaItemWithOwner} from '../types/DBTypes';
 import Likes from '../components/Likes';
+import Comments from '../components/Comments';
 
 const Single: React.FC = () => {
   const {state} = useLocation();
@@ -46,6 +47,7 @@ const Single: React.FC = () => {
       >
         Go back
       </button>
+      <Comments item={item} />
     </div>
   );
 };
