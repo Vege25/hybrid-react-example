@@ -362,9 +362,30 @@ const useUser = () => {
     return result;
   };
   const getUserById = async (user_id: number) => {
-    return await fetchData<User>(
-      import.meta.env.VITE_AUTH_API + '/users/' + user_id,
-    );
+    const query = `
+    query User($userId: ID!) {
+      user(user_id: $userId) {
+        created_at
+        email
+        level_name
+        user_id
+        username
+      }
+    }
+      `;
+
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({query, user_id}),
+    };
+    const resData = await fetchData<{
+      data: {user: UserWithNoPassword};
+    }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+    const result = resData.data.user;
+    return result;
   };
 
   return {
