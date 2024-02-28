@@ -2,8 +2,8 @@ import {
   Like,
   MediaItem,
   MediaItemWithOwner,
-  User,
   UserWithNoPassword,
+  Comment,
 } from '../types/DBTypes';
 import {fetchData} from '../lib/functions';
 import {useEffect, useState} from 'react';
