@@ -19,6 +19,7 @@ import {Credentials} from '../types/LocalTypes.ts';
 
 const useMedia = () => {
   const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
+  const [myMediaArray, setMyMediaArray] = useState<MediaItemWithOwner[]>([]);
   const getMedia = async () => {
     try {
       const query = `
@@ -53,6 +54,43 @@ const useMedia = () => {
       setMediaArray(resData.data.mediaItems);
     } catch (error) {
       console.error('getMedia failed', error);
+    }
+  };
+  const getMyMedia = async (token: string) => {
+    try {
+      const query = `
+        query MyMedias {
+          myMedias {
+            created_at
+            description
+            filename
+            filesize
+            media_type
+            media_id
+            owner {
+              username
+            }
+            thumbnail
+            title
+            user_id
+          }
+        }
+      `;
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({query}),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const resData = await fetchData<{
+        data: {myMedias: MediaItemWithOwner[]};
+      }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+      setMyMediaArray(resData.data.myMedias);
+    } catch (error) {
+      console.error('getMyMedia failed', error);
     }
   };
 
@@ -116,7 +154,7 @@ const useMedia = () => {
     }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
   };
 
-  return {mediaArray, postMedia};
+  return {mediaArray, myMediaArray, getMyMedia, postMedia};
 };
 
 const useFriends = () => {
@@ -582,39 +620,61 @@ const useComment = () => {
     media_id: number,
     token: string,
   ) => {
-    // TODO: Send a POST request to /comments with the comment object and the token in the Authorization header.
+    const query = `
+      mutation postComment($input: CommentInput!) {
+        postComment(input: $input) {
+          message
+        }
+      }
+    `;
+    const variables = {
+      input: {
+        comment_text,
+        media_id,
+      },
+    };
+    // options with authorazion
     const options: RequestInit = {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({comment_text, media_id}),
+      body: JSON.stringify({query, variables}),
     };
 
-    return await fetchData<MessageResponse>(
-      import.meta.env.VITE_MEDIA_API + '/comments',
+    const resData = await fetchData<MessageResponse>(
+      import.meta.env.VITE_GRAPHQL_SERVER,
       options,
     );
+    return resData;
   };
 
-  const {getUserById} = useUser();
-
   const getCommentsByMediaId = async (media_id: number) => {
-    // TODO: Send a GET request to /comments/:media_id to get the comments.
-    const comments = await fetchData<Comment[]>(
-      import.meta.env.VITE_MEDIA_API + '/comments/bymedia/' + media_id,
-    );
-    // Get usernames for all comments from auth api
-    const commentsWithUsername = await Promise.all<
-      Comment & {username: string}
-    >(
-      comments.map(async (comment) => {
-        const user = await getUserById(comment.user_id);
-        return {...comment, username: user.username};
-      }),
-    );
-    return commentsWithUsername;
+    const query = `
+    query GetCommentsByMediaId($mediaId: ID!) {
+      getCommentsByMediaId(media_id: $mediaId) {
+        comment_id
+        comment_text
+        created_at
+        user_id
+        media_id
+      }
+    }`;
+    const variables = {
+      mediaId: media_id,
+    };
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({query, variables}),
+    };
+    const resData = await fetchData<{
+      data: {getCommentsByMediaId: Comment[]};
+    }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+    return resData.data.getCommentsByMediaId;
   };
 
   return {postComment, getCommentsByMediaId};

@@ -8,7 +8,7 @@ const FriendElement = (props: {friend: Friend}) => {
       <UserProfileIcon
         userInitial={friend?.username ? Array.from(friend?.username)[0] : 'G'}
       />
-      <p>{friend.username}</p>
+      <p className="text-lg font-bold capitalize">{friend.username}</p>
     </div>
   );
 };

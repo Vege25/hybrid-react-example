@@ -6,6 +6,8 @@ import SearchFriends from '../components/SearchFriends';
 import FriendElement from '../components/FriendElement';
 const Friends: React.FC = () => {
   const {friendsArray, getFriendsByToken} = useFriends();
+
+  // Get friends by token on mount
   useEffect(() => {
     try {
       const token = localStorage.getItem('token');
@@ -31,7 +33,7 @@ const Friends: React.FC = () => {
       {/* Friends List Section */}
       {}
       <div className="m-auto w-full max-w-xl px-2">
-        <h2 className="text-lg font-bold ml-4">Your Friends</h2>
+        <h2 className="ml-4 text-lg font-bold">Your Friends</h2>
         <div className="ml-4 flex flex-col gap-4">
           {friendsArray.length > 0 ? (
             friendsArray.map((friend: Friend) => (

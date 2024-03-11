@@ -16,7 +16,6 @@ const Upload = () => {
 
   const doUpload = async () => {
     try {
-      //TODO: fix this function
       const token = localStorage.getItem('token');
       if (!token || !file) {
         return;
@@ -45,9 +44,9 @@ const Upload = () => {
   );
   return (
     <>
-      <div className="flex justify-center items-center mt-4">
-        <div className="w-full max-w-md p-4 border rounded-lg shadow-md">
-          <h2 className="text-center text-2xl font-bold mb-4">Upload</h2>
+      <div className="mt-4 flex items-center justify-center">
+        <div className="w-full max-w-md rounded-lg border p-4 shadow-md">
+          <h2 className="mb-4 text-center text-2xl font-bold">Upload</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
@@ -61,7 +60,7 @@ const Upload = () => {
                 type="text"
                 id="title"
                 onChange={handleInputChange}
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                className="mt-1 w-full rounded-md border p-2 focus:border-blue-300 focus:outline-none focus:ring"
               />
             </div>
             <div>
@@ -76,7 +75,7 @@ const Upload = () => {
                 rows={5}
                 id="description"
                 onChange={handleInputChange}
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                className="mt-1 w-full rounded-md border p-2 focus:border-blue-300 focus:outline-none focus:ring"
               ></textarea>
             </div>
             <div>
@@ -92,7 +91,7 @@ const Upload = () => {
                 id="file"
                 accept="image/*, video/*"
                 onChange={handleFileChange}
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                className="mt-1 w-full rounded-md border p-2 focus:border-blue-300 focus:outline-none focus:ring"
               />
             </div>
             <img
@@ -108,7 +107,7 @@ const Upload = () => {
             <button
               type="submit"
               disabled={file && inputs.title.length > 3 ? false : true}
-              className="w-full p-2 bg-blue-500 text-white rounded-md disabled:opacity-50"
+              className="w-full rounded-md bg-blue-500 p-2 text-white disabled:opacity-50"
             >
               Upload
             </button>

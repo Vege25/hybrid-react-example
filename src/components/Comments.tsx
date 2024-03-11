@@ -4,6 +4,7 @@ import {MediaItemWithOwner} from '../types/DBTypes';
 import {useUserContext} from '../hooks/contextHooks';
 import {useForm} from '../hooks/FormHooks';
 import {useComment} from '../hooks/apiHooks';
+import UserProfileIcon from './UserProfileIcon';
 
 const Comments = ({item}: {item: MediaItemWithOwner}) => {
   const {comments, setComments} = useCommentStore();
@@ -52,46 +53,38 @@ const Comments = ({item}: {item: MediaItemWithOwner}) => {
   return (
     <>
       {user && (
-        <>
-          <h3 className="text-xl">Post Comment</h3>
+        <div className="w-2/3">
           <form onSubmit={handleSubmit} ref={formRef}>
-            <div className="flex w-4/5">
-              <label className="w-1/3 p-6 text-end" htmlFor="comment">
-                Comment
-              </label>
+            <div className="flex w-full items-center">
+              <div>
+                <UserProfileIcon userInitial={user.username.charAt(0)} />
+              </div>
               <input
-                className="m-3 w-2/3 rounded-md border border-slate-500 p-3 text-slate-950"
+                className="m-3 w-full rounded-md border border-slate-500 p-3 text-white"
                 name="comment_text"
+                required
+                placeholder="Add comment"
                 type="text"
                 id="comment"
                 onChange={handleInputChange}
               />
-            </div>
-            <div className="flex w-4/5 justify-end">
               <button
-                className="m-3 w-1/3 rounded-md bg-slate-700 p-3"
+                className="m-3 w-1/4 scale-95 rounded-md bg-slate-700 p-3 transition-all duration-300 ease-in-out hover:scale-100"
                 type="submit"
               >
-                Post
+                <i className="fa-solid fa-paper-plane text-xl"></i>
               </button>
             </div>
           </form>
-        </>
+        </div>
       )}
-      {comments.length > 0 && (
+      {comments && comments.length > 0 && (
         <>
-          <h3 className="text-xl">Comments</h3>
+          <h3 className="text-xl font-bold">Comments</h3>
           <ul>
             {comments.map((comment) => (
-              <li key={comment.comment_id}>
-                <div className="rounded-md border border-slate-200 bg-slate-800 p-3 text-slate-100">
-                  <span className="font-bold text-slate-200">
-                    On{' '}
-                    {new Date(comment.created_at!).toLocaleDateString('fi-FI')}{' '}
-                  </span>
-                  <span className="font-bold text-slate-200">
-                    {comment.username} wrote:
-                  </span>
+              <li className="mb-2" key={comment.comment_id}>
+                <div className="rounded-md text-slate-100">
                   <span className="ml-2">{comment.comment_text}</span>
                 </div>
               </li>

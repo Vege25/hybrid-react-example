@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import {useUserContext} from '../hooks/contextHooks';
 
 const LogOut: React.FC = () => {
-  // Add your component logic here
+  // on mount log out
   const {handleLogout} = useUserContext();
   useEffect(() => {
     handleLogout();
