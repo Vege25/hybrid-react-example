@@ -4,6 +4,7 @@ import {
   MediaItemWithOwner,
   UserWithNoPassword,
   Comment,
+  PendingFriend,
 } from '../types/DBTypes';
 import {fetchData} from '../lib/functions';
 import {useEffect, useState} from 'react';
@@ -159,6 +160,9 @@ const useMedia = () => {
 
 const useFriends = () => {
   const [friendsArray, setFriendsArray] = useState<Friend[]>([]);
+  const [pendingFriendsArray, setPendingFriendsArray] = useState<
+    PendingFriend[] | null
+  >(null);
   const getFriendsByToken = async (token: string) => {
     try {
       const query = `
@@ -232,7 +236,94 @@ const useFriends = () => {
       console.error('postFriendRequest failed', error);
     }
   };
-  return {friendsArray, getFriendsByToken, postFriendRequest};
+  const getPendingFriends = async (token: string) => {
+    try {
+      const query = `
+      query PendingFriends {
+        pendingFriends {
+          email
+          user_id
+          username
+        }
+      }
+      `;
+
+      const options: RequestInit = {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({query}),
+      };
+
+      const friendsData = await fetchData<{
+        data?: {pendingFriends?: PendingFriend[]};
+      }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+
+      if (
+        friendsData.data &&
+        friendsData.data.pendingFriends &&
+        friendsData.data.pendingFriends.length > 0 &&
+        friendsData.data.pendingFriends[0] != null
+      ) {
+        const friends = friendsData.data.pendingFriends;
+        setPendingFriendsArray(friends);
+      } else {
+        console.error(
+          'Invalid data received from GraphQL server:',
+          friendsData,
+        );
+      }
+    } catch (error) {
+      console.error('getFriendsByToken failed', error);
+    }
+  };
+  const acceptFriendRequest = async (token: string, friend_id: string) => {
+    try {
+      const query = `
+      mutation Mutation($input: friendId!) {
+        acceptFriendRequest(input: $input) {
+          message
+          user {
+            user_id
+          }
+        }
+      }
+      `;
+      const variables = {
+        input: {
+          friend_id: friend_id,
+        },
+      };
+      const options: RequestInit = {
+        method: 'POST',
+        body: JSON.stringify({query, variables}),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const resData = await fetchData<{
+        data: {
+          acceptFriendRequest: {user: UserWithNoPassword; message: string};
+        };
+      }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+      const data = resData.data.acceptFriendRequest;
+      return data;
+    } catch (error) {
+      console.error('acceptFriendRequest failed', error);
+    }
+  };
+  return {
+    friendsArray,
+    getFriendsByToken,
+    postFriendRequest,
+    getPendingFriends,
+    pendingFriendsArray,
+    acceptFriendRequest,
+  };
 };
 
 const useUser = () => {

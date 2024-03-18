@@ -11,16 +11,21 @@ const RegisterForm: React.FC = () => {
 
   const doRegister = async () => {
     try {
-      if (!getUsernameAvailable || !emailAvailable) {
+      if (!usernameAvailable || !emailAvailable) {
+        alert('Username or email not available');
         return;
       }
+      console.log(usernameAvailable, emailAvailable);
 
       const creds = {
         username: inputs.username,
         password: inputs.password,
         email: inputs.email,
       };
-      await postUser(creds);
+      const user = await postUser(creds);
+      if (user) {
+        alert('User created');
+      }
     } catch (e) {
       console.log((e as Error).message);
     }
@@ -34,16 +39,16 @@ const RegisterForm: React.FC = () => {
   const handleUsernameBlur = async (
     event: React.SyntheticEvent<HTMLInputElement>,
   ) => {
+    console.log(event.currentTarget.value);
     const result = await getUsernameAvailable(event.currentTarget.value);
     setUsernameAvailable(result);
   };
 
   const handleEmailBlur = async () => {
+    console.log(inputs.email);
     const result = await getEmailAvailable(inputs.email);
     setEmailAvailable(result);
   };
-
-  console.log(usernameAvailable, emailAvailable);
   return (
     <>
       <div className="mt-6 flex items-center justify-center">
