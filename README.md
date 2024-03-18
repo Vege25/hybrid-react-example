@@ -26,7 +26,7 @@
 - Log out
 
 ## Tietokannan kuvaus
-- TODO
+![ss66](src/assets/screenshots/ss66.png)
 ## Screenshots
 ### Profile page small screen
 ![ss11](src/assets/screenshots/ss11.png)
@@ -38,3 +38,4 @@
 ![ss44](src/assets/screenshots/ss44.png)
 ### Upload posting page
 ![ss55](src/assets/screenshots/ss55.png)
+
