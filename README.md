@@ -26,7 +26,7 @@
 - TODO
 ## Screenshots
 ![ss11](src/assets/screenshots/ss11.png)
-![ss22](screenshots/ss22.png)
-![ss33](screenshots/ss33.png)
-![ss44](screenshots/ss44.png)
-![ss55](screenshots/ss55.png)
+![ss22](src/assets/screenshots/ss22.png)
+![ss33](src/assets/screenshots/ss33.png)
+![ss44](src/assets/screenshots/ss44.png)
+![ss55](src/assets/screenshots/ss55.png)
