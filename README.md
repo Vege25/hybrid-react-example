@@ -7,7 +7,7 @@
 [Link to backend github repository](https://github.com/Vege25/hybrid-servers)
 
 ## Link to apidocs
-- TODO
+[Link to apidoc](https://hybrid-server.northeurope.cloudapp.azure.com/upload/docs/index.html)
 
 ## App idea
 - Share Productivity with friends and others by posting a daily productive media
