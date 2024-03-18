@@ -25,7 +25,7 @@
 ## Tietokannan kuvaus
 - TODO
 ## Screenshots
-![ss11](screenshots/ss11.png)
+![ss11](src/assets/screenshots/ss11.png)
 ![ss22](screenshots/ss22.png)
 ![ss33](screenshots/ss33.png)
 ![ss44](screenshots/ss44.png)
